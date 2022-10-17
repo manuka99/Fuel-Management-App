@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Text;
 using FuelManagement.Models;
 using FuelManagement.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
@@ -28,10 +29,17 @@ namespace FuelManagement.Controllers
             {
                 var user = await _service.GetByEmailAsync(email);
 
-                if (user != null)
-                {
-                    //create claims details based on the user information
-                    var claims = new[] {
+                if (user == null)
+                    return BadRequest(new { message = "Invalid email" });
+
+                // validate password
+                bool verified = BCrypt.Net.BCrypt.Verify(password, user.password);
+
+                if (!verified)
+                    return BadRequest(new { message = "Invalid credentials" });
+
+                //create claims details based on the user information
+                var claims = new[] {
                         new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                         new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
@@ -41,21 +49,16 @@ namespace FuelManagement.Controllers
                         new Claim("Email", user.email ?? "unknown")
                     };
 
-                    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-                    var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-                    var token = new JwtSecurityToken(
-                        _configuration["Jwt:Issuer"],
-                        _configuration["Jwt:Audience"],
-                        claims,
-                        expires: DateTime.UtcNow.AddMinutes(10),
-                        signingCredentials: signIn);
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+                var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                var token = new JwtSecurityToken(
+                    _configuration["Jwt:Issuer"],
+                    _configuration["Jwt:Audience"],
+                    claims,
+                    expires: DateTime.UtcNow.AddMinutes(10),
+                    signingCredentials: signIn);
 
-                    return Ok(new JwtSecurityTokenHandler().WriteToken(token));
-                }
-                else
-                {
-                    return BadRequest("Invalid credentials");
-                }
+                return Ok(new JwtSecurityTokenHandler().WriteToken(token));
             }
             else
             {

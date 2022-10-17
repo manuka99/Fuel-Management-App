@@ -4,6 +4,7 @@ using FuelManagement.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using FuelManagement.Util;
 
 namespace FuelManagement.Controllers;
 
@@ -31,6 +32,10 @@ public class UserController : ControllerBase
     [Authorize]
     public async Task<ActionResult<Shed>> GetById(string id)
     {
+        // validate user is authorized to make changes
+        var authUser = _tokenService.getAuthUser(HttpContext);
+        if (authUser.Id != id) return BadRequest(new { message = ErrorStatus.NOT_AUTHORIZED });
+
         var user = await _userService.GetByIdAsync(id);
         if (user == null)
         {
@@ -44,7 +49,7 @@ public class UserController : ControllerBase
     public async Task<ActionResult<User>> GetByEmail(string email)
     {
         var authUser = _tokenService.getAuthUser(HttpContext);
-        if (authUser.email != email) return NotFound();
+        if (authUser.email != email) return BadRequest(new { message = ErrorStatus.NOT_AUTHORIZED });
 
         var user = await _userService.GetByEmailAsync(email);
         if (user == null)
@@ -57,6 +62,11 @@ public class UserController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create(User user)
     {
+        if (user != null && user.password != null)
+        {
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword(user.password);
+            user.password = passwordHash;
+        }
         await _userService.CreateAsync(user);
         return Ok(user);
     }
@@ -69,8 +79,20 @@ public class UserController : ControllerBase
     }
 
     [HttpPut]
+    [Authorize]
     public async Task<IActionResult> Update(string id, User updatedUser)
     {
+        // validate user is authorized to make changes
+        var authUser = _tokenService.getAuthUser(HttpContext);
+        if (authUser.Id != id) return BadRequest(new { message = ErrorStatus.NOT_AUTHORIZED });
+
+        // encrypt password
+        if (updatedUser != null && updatedUser.password != null)
+        {
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword(updatedUser.password);
+            updatedUser.password = passwordHash;
+        }
+
         var queriedShed = await _userService.GetByIdAsync(id);
         if (queriedShed == null)
         {
@@ -81,8 +103,13 @@ public class UserController : ControllerBase
     }
 
     [HttpDelete("/id")]
+    [Authorize]
     public async Task<IActionResult> DeleteById(string id)
     {
+        // validate user is authorized to make changes
+        var authUser = _tokenService.getAuthUser(HttpContext);
+        if (authUser.Id != id) return BadRequest(new { message = ErrorStatus.NOT_AUTHORIZED });
+
         var shed = await _userService.GetByIdAsync(id);
         if (shed == null)
         {
@@ -93,8 +120,13 @@ public class UserController : ControllerBase
     }
 
     [HttpDelete("/email")]
+    [Authorize]
     public async Task<IActionResult> DeleteByEmail(string email)
     {
+        // validate user is authorized to make changes
+        var authUser = _tokenService.getAuthUser(HttpContext);
+        if (authUser.email != email) return BadRequest(new { message = ErrorStatus.NOT_AUTHORIZED });
+
         var shed = await _userService.GetByEmailAsync(email);
         if (shed == null)
         {

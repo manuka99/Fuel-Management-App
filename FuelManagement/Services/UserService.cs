@@ -48,7 +48,7 @@ namespace FuelManagement.Services
 
         public async Task<bool> UpdateAsync(string id, User user)
         {
-            var dbUser = await GetByEmailAsync(user.email);
+            var dbUser = await GetByIdAsync(id);
             if (dbUser.Id == id)
             {
                 user.Id = id;
