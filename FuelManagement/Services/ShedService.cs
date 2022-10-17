@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using FuelManagement.Models;
 using MongoDB.Driver;
 
@@ -14,6 +15,14 @@ namespace FuelManagement.Services
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
             _database = database.GetCollection<Shed>(settings.ShedCollectionName);
+            var logBuilder = Builders<Shed>.IndexKeys.Ascending(x => x.city).Ascending(x => x.tags);
+            var indexModel = new CreateIndexModel<Shed>(logBuilder);
+            _database.Indexes.CreateOne(indexModel);
+        }
+
+        public async Task<List<Shed>> search(string text)
+        {
+            return await _database.Find(Builders<Shed>.Filter.Text(text)).ToListAsync();
         }
 
         public async Task<List<Shed>> GetAllAsync()
@@ -28,6 +37,7 @@ namespace FuelManagement.Services
 
         public async Task<Shed> CreateAsync(Shed shed)
         {
+            shed.Id = null;
             await _database.InsertOneAsync(shed);
             return shed;
         }
