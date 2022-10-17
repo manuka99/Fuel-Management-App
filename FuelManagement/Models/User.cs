@@ -17,7 +17,9 @@ namespace FuelManagement.Models
         public string? email { get; set; }
         public string? phone { get; set; }
         public bool? isStationOwner { get; set; }
+        [Required(ErrorMessage = "Password Required")]
         public string? password {get; set; }
+        public DateTime? createdDate { get; set; }
     }
 }
 

@@ -2,6 +2,8 @@
 using FuelManagement.Services;
 using FuelManagement.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace FuelManagement.Controllers;
 
@@ -10,10 +12,12 @@ namespace FuelManagement.Controllers;
 public class UserController : ControllerBase
 {
     private readonly UserService _userService;
+    private readonly TokenService _tokenService;
 
-    public UserController(UserService service)
+    public UserController(UserService service, TokenService tokenService)
     {
         _userService = service;
+        _tokenService = tokenService;
     }
 
     [HttpGet("count")]
@@ -24,6 +28,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("/id/{id}")]
+    [Authorize]
     public async Task<ActionResult<Shed>> GetById(string id)
     {
         var user = await _userService.GetByIdAsync(id);
@@ -35,8 +40,12 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("/email/{email}")]
+    [Authorize]
     public async Task<ActionResult<User>> GetByEmail(string email)
     {
+        var authUser = _tokenService.getAuthUser(HttpContext);
+        if (authUser.email != email) return NotFound();
+
         var user = await _userService.GetByEmailAsync(email);
         if (user == null)
         {
