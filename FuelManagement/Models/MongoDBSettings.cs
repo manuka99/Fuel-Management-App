@@ -7,6 +7,7 @@ namespace FuelManagement.Models
         public string DatabaseName { get; set; } = null!;
         public string UserCollectionName { get; set; } = null!;
         public string ShedCollectionName { get; set; } = null!;
+        public string FuelRequestCollectionName { get; set; } = null!;
     }
 }
 

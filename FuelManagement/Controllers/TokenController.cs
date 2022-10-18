@@ -22,7 +22,7 @@ namespace FuelManagement.Controllers
             _service = service;
         }
 
-        [HttpPost("/generate")]
+        [HttpPost("generate")]
         public async Task<IActionResult> Login(string email, string password)
         {
             if (email != null && password != null)

@@ -28,7 +28,7 @@ public class UserController : ControllerBase
         return Ok(count);
     }
 
-    [HttpGet("/id/{id}")]
+    [HttpGet("id/{id}")]
     [Authorize]
     public async Task<ActionResult<Shed>> GetById(string id)
     {
@@ -44,7 +44,7 @@ public class UserController : ControllerBase
         return Ok(user);
     }
 
-    [HttpGet("/email/{email}")]
+    [HttpGet("email/{email}")]
     [Authorize]
     public async Task<ActionResult<User>> GetByEmail(string email)
     {
@@ -71,7 +71,7 @@ public class UserController : ControllerBase
         return Ok(user);
     }
 
-    [HttpPost("/checkEmailExists")]
+    [HttpPost("checkEmailExists")]
     public async Task<IActionResult> CheckEmailExists(String email)
     {
         var result = await _userService.checkEmailExists(email);
@@ -102,7 +102,7 @@ public class UserController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("/id")]
+    [HttpDelete("id")]
     [Authorize]
     public async Task<IActionResult> DeleteById(string id)
     {
@@ -119,7 +119,7 @@ public class UserController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("/email")]
+    [HttpDelete("email")]
     [Authorize]
     public async Task<IActionResult> DeleteByEmail(string email)
     {

@@ -21,10 +21,15 @@ namespace FuelManagement.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string shed { get; set; }
 
+        [Required(ErrorMessage = "Fuel Type Required")]
         public string fuelType { get; set; }
+
+        [Required(ErrorMessage = "fuel Quantity Required")]
         public double fuelQTY { get; set; }
+
         public bool isApproved { get; set; }
         public bool isCompleted { get; set; }
+        public int tokenId { get; set; }
     }
 }
 

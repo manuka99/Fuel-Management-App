@@ -18,6 +18,7 @@ builder.Services.AddSingleton<IMongoDBSettings>(provider =>
 builder.Services.AddScoped<ShedService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<FuelRequestService>(); 
 
 // authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>

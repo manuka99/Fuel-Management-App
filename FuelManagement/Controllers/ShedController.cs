@@ -20,21 +20,21 @@ public class ShedController : ControllerBase
         _tokenService = tokenService;
     }
 
-    [HttpGet("/search/{text}")]
+    [HttpGet("search/{text}")]
     public async Task<ActionResult<IEnumerable<Shed>>> Search(string text)
     {
         var sheds = await _shedService.search(text);
         return Ok(sheds);
     }
 
-    [HttpGet("/all")]
+    [HttpGet("all")]
     public async Task<ActionResult<IEnumerable<Shed>>> GetAll()
     {
         var sheds = await _shedService.GetAllAsync();
         return Ok(sheds);
     }
 
-    [HttpGet("/{id}")]
+    [HttpGet("{id}")]
     public async Task<ActionResult<Shed>> GetById(string id)
     {
         var shed = await _shedService.GetByIdAsync(id);
