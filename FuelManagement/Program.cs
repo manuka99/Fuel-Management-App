@@ -40,7 +40,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "ApiPlayground", Version = "v1" });
+    c.EnableAnnotations();
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Fuel Management API", Version = "v1" });
     c.AddSecurityDefinition("token", new OpenApiSecurityScheme
     {
         Type = SecuritySchemeType.ApiKey,

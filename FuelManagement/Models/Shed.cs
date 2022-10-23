@@ -28,11 +28,11 @@ namespace FuelManagement.Models
         public string? tags { get; set; }
         public string? description { get; set; }
         public double petrolQTY { get; set; }
-        public double petrolHoldQTY { get; set; }
-        public int petrolDispenserQTY { get; set; }
+        public double maxPetrolRequestQTY { get; set; }
+        public int petrolDispenseTimePerVehicle { get; set; }
         public double dieselQTY { get; set; }
-        public double dieselHoldQTY { get; set; }
-        public int dieselDispenserQTY { get; set; }
+        public double maxDieselRequestQTY { get; set; }
+        public int dieselDispenseTimePerVehicle { get; set; }
     }
 }
 

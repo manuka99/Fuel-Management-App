@@ -35,6 +35,11 @@ namespace FuelManagement.Services
             return await _database.Find<Shed>(s => s.Id == id).FirstOrDefaultAsync();
         }
 
+        public async Task<List<Shed>> GetByOwnerAsync(string ownerId)
+        {
+            return await _database.Find<Shed>(s => s.owner == ownerId).ToListAsync();
+        }
+
         public async Task<Shed> CreateAsync(Shed shed)
         {
             shed.Id = null;

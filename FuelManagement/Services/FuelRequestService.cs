@@ -26,9 +26,19 @@ namespace FuelManagement.Services
             return await _database.Find<FuelRequests>(s => s.Id == id).FirstOrDefaultAsync();
         }
 
+        public async Task<FuelRequests> GetByTokenIdAndShed(int tokenId, string shedId)
+        {
+            return await _database.Find<FuelRequests>(s => s.tokenId == tokenId && s.shed == shedId).FirstOrDefaultAsync();
+        }
+
         public async Task<List<FuelRequests>> GetByShedAsync(string? shedId)
         {
             return await _database.Find<FuelRequests>(s => s.shed == shedId && s.isCompleted == false).ToListAsync();
+        }
+
+        public async Task<List<FuelRequests>> GetByShedAndFuelType(string? shedId, string fuelType)
+        {
+            return await _database.Find<FuelRequests>(s => s.shed == shedId && s.isCompleted == false && s.fuelType == fuelType).ToListAsync();
         }
 
         public async Task<List<FuelRequests>> GetByShedUserAsync(string? shedId, string? userId)
@@ -68,6 +78,11 @@ namespace FuelManagement.Services
         public async Task DeleteByIdAsync(string id)
         {
             await _database.DeleteOneAsync(s => s.Id == id);
+        }
+
+        public async Task DeleteAllIncompleteRequestsPerShedAsync(string shedId)
+        {
+            await _database.DeleteManyAsync(s => s.shed == shedId && s.isCompleted == false);
         }
 
         public async Task<bool> checkUserRequestedShed(string? shed, string? user)

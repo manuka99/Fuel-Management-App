@@ -68,6 +68,7 @@ namespace FuelManagement.Services
             await _database.DeleteOneAsync(s => s.email == email);
         }
 
+        // returns true if an account exists with the provided email
         public async Task<bool> checkEmailExists(string? email)
         {
             var dbUser = await this.GetByEmailAsync(email);

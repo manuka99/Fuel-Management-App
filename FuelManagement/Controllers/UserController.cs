@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using FuelManagement.Util;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace FuelManagement.Controllers;
 
@@ -21,6 +22,7 @@ public class UserController : ControllerBase
         _tokenService = tokenService;
     }
 
+    [SwaggerOperation(Summary = "Get the total number of users")]
     [HttpGet("count")]
     public async Task<ActionResult<IEnumerable<Shed>>> GetAll()
     {
@@ -28,7 +30,8 @@ public class UserController : ControllerBase
         return Ok(count);
     }
 
-    [HttpGet("id/{id}")]
+    [SwaggerOperation(Summary = "Get user by id")]
+    [HttpGet("id")]
     [Authorize]
     public async Task<ActionResult<Shed>> GetById(string id)
     {
@@ -44,7 +47,8 @@ public class UserController : ControllerBase
         return Ok(user);
     }
 
-    [HttpGet("email/{email}")]
+    [SwaggerOperation(Summary = "Get user by email")]
+    [HttpGet("email")]
     [Authorize]
     public async Task<ActionResult<User>> GetByEmail(string email)
     {
@@ -59,6 +63,7 @@ public class UserController : ControllerBase
         return Ok(user);
     }
 
+    [SwaggerOperation(Summary = "Create a new user profile with unique email")]
     [HttpPost]
     public async Task<IActionResult> Create(User user)
     {
@@ -71,13 +76,15 @@ public class UserController : ControllerBase
         return Ok(user);
     }
 
-    [HttpPost("checkEmailExists")]
+    [SwaggerOperation(Summary = "Check if email exists")]
+    [HttpPost("email-status")]
     public async Task<IActionResult> CheckEmailExists(String email)
     {
         var result = await _userService.checkEmailExists(email);
-        return Ok(result);
+        return Ok(new {accountExists = result});
     }
 
+    [SwaggerOperation(Summary = "update user profile")]
     [HttpPut]
     [Authorize]
     public async Task<IActionResult> Update(string id, User updatedUser)
@@ -102,6 +109,7 @@ public class UserController : ControllerBase
         return NoContent();
     }
 
+    [SwaggerOperation(Summary = "delete user profile by id")]
     [HttpDelete("id")]
     [Authorize]
     public async Task<IActionResult> DeleteById(string id)
@@ -119,6 +127,7 @@ public class UserController : ControllerBase
         return NoContent();
     }
 
+    [SwaggerOperation(Summary = "update user profile by email")]
     [HttpDelete("email")]
     [Authorize]
     public async Task<IActionResult> DeleteByEmail(string email)
