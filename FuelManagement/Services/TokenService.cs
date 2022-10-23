@@ -24,6 +24,9 @@ namespace FuelManagement.Services
                     case "Email":
                         authUser.email = claim.Value;
                         break;
+                    case "isStationOwner":
+                        authUser.isStationOwner = claim.Value == "true";
+                        break;
                     default:
                         break;
                 }

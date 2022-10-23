@@ -31,18 +31,18 @@ namespace FuelManagement.Services
             return await _database.Find<User>(s => s.email == email).FirstOrDefaultAsync();
         }
 
-        public async Task<User?> CreateAsync(User user)
+        public async Task<bool> CreateAsync(User user)
         {
             bool isUserExist = await checkEmailExists(user.email);
             if (!isUserExist)
             {
                 user.Id = null;
                 await _database.InsertOneAsync(user);
-                return user;
+                return true;
             }
             else
             {
-                return null;
+                return false;
             }
         }
 

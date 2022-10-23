@@ -30,16 +30,15 @@ public class UserController : ControllerBase
         return Ok(count);
     }
 
-    [SwaggerOperation(Summary = "Get user by id")]
-    [HttpGet("id")]
+    [SwaggerOperation(Summary = "Get user profile")]
+    [HttpGet("self")]
     [Authorize]
-    public async Task<ActionResult<Shed>> GetById(string id)
+    public async Task<ActionResult<Shed>> GetById()
     {
         // validate user is authorized to make changes
         var authUser = _tokenService.getAuthUser(HttpContext);
-        if (authUser.Id != id) return BadRequest(new { message = ErrorStatus.NOT_AUTHORIZED });
 
-        var user = await _userService.GetByIdAsync(id);
+        var user = await _userService.GetByIdAsync(authUser.Id);
         if (user == null)
         {
             return NotFound();
@@ -47,21 +46,21 @@ public class UserController : ControllerBase
         return Ok(user);
     }
 
-    [SwaggerOperation(Summary = "Get user by email")]
-    [HttpGet("email")]
-    [Authorize]
-    public async Task<ActionResult<User>> GetByEmail(string email)
-    {
-        var authUser = _tokenService.getAuthUser(HttpContext);
-        if (authUser.email != email) return BadRequest(new { message = ErrorStatus.NOT_AUTHORIZED });
+    //[SwaggerOperation(Summary = "Get user by email")]
+    //[HttpGet("email")]
+    //[Authorize]
+    //public async Task<ActionResult<User>> GetByEmail(string email)
+    //{
+    //    var authUser = _tokenService.getAuthUser(HttpContext);
+    //    if (authUser.email != email) return BadRequest(new { message = ErrorStatus.NOT_AUTHORIZED });
 
-        var user = await _userService.GetByEmailAsync(email);
-        if (user == null)
-        {
-            return NotFound();
-        }
-        return Ok(user);
-    }
+    //    var user = await _userService.GetByEmailAsync(email);
+    //    if (user == null)
+    //    {
+    //        return NotFound();
+    //    }
+    //    return Ok(user);
+    //}
 
     [SwaggerOperation(Summary = "Create a new user profile with unique email")]
     [HttpPost]
@@ -72,8 +71,10 @@ public class UserController : ControllerBase
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(user.password);
             user.password = passwordHash;
         }
-        await _userService.CreateAsync(user);
-        return Ok(user);
+        var result = await _userService.CreateAsync(user);
+        if (result)
+            return Ok();
+        else return BadRequest("A user profile exists with the provided email");
     }
 
     [SwaggerOperation(Summary = "Check if email exists")]
@@ -87,11 +88,16 @@ public class UserController : ControllerBase
     [SwaggerOperation(Summary = "update user profile")]
     [HttpPut]
     [Authorize]
-    public async Task<IActionResult> Update(string id, User updatedUser)
+    public async Task<IActionResult> Update(User updatedUser)
     {
         // validate user is authorized to make changes
         var authUser = _tokenService.getAuthUser(HttpContext);
-        if (authUser.Id != id) return BadRequest(new { message = ErrorStatus.NOT_AUTHORIZED });
+
+        var queriedUser = await _userService.GetByIdAsync(authUser.Id);
+        if (queriedUser == null)
+        {
+            return NotFound();
+        }
 
         // encrypt password
         if (updatedUser != null && updatedUser.password != null)
@@ -99,49 +105,38 @@ public class UserController : ControllerBase
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(updatedUser.password);
             updatedUser.password = passwordHash;
         }
-
-        var queriedShed = await _userService.GetByIdAsync(id);
-        if (queriedShed == null)
-        {
-            return NotFound();
-        }
-        await _userService.UpdateAsync(id, updatedUser);
-        return NoContent();
+        updatedUser.Id = queriedUser.Id;
+        updatedUser.email = queriedUser.email;
+        await _userService.UpdateAsync(authUser.Id, updatedUser);
+        return Ok();
     }
 
-    [SwaggerOperation(Summary = "delete user profile by id")]
-    [HttpDelete("id")]
+    [SwaggerOperation(Summary = "delete user profile")]
+    [HttpDelete("self")]
     [Authorize]
-    public async Task<IActionResult> DeleteById(string id)
+    public async Task<IActionResult> DeleteById()
     {
         // validate user is authorized to make changes
         var authUser = _tokenService.getAuthUser(HttpContext);
-        if (authUser.Id != id) return BadRequest(new { message = ErrorStatus.NOT_AUTHORIZED });
-
-        var shed = await _userService.GetByIdAsync(id);
-        if (shed == null)
-        {
-            return NotFound();
-        }
-        await _userService.DeleteByIdAsync(id);
-        return NoContent();
+        await _userService.DeleteByIdAsync(authUser.Id);
+        return Ok();
     }
 
-    [SwaggerOperation(Summary = "update user profile by email")]
-    [HttpDelete("email")]
-    [Authorize]
-    public async Task<IActionResult> DeleteByEmail(string email)
-    {
-        // validate user is authorized to make changes
-        var authUser = _tokenService.getAuthUser(HttpContext);
-        if (authUser.email != email) return BadRequest(new { message = ErrorStatus.NOT_AUTHORIZED });
+    //[SwaggerOperation(Summary = "delete user profile by email")]
+    //[HttpDelete("email")]
+    //[Authorize]
+    //public async Task<IActionResult> DeleteByEmail(string email)
+    //{
+    //    // validate user is authorized to make changes
+    //    var authUser = _tokenService.getAuthUser(HttpContext);
+    //    if (authUser.email != email) return BadRequest(new { message = ErrorStatus.NOT_AUTHORIZED });
 
-        var shed = await _userService.GetByEmailAsync(email);
-        if (shed == null)
-        {
-            return NotFound();
-        }
-        await _userService.DeleteByEmailAsync(email);
-        return NoContent();
-    }
+    //    var userFetc = await _userService.GetByEmailAsync(email);
+    //    if (userFetc == null)
+    //    {
+    //        return NotFound();
+    //    }
+    //    await _userService.DeleteByEmailAsync(email);
+    //    return NoContent();
+    //}
 }

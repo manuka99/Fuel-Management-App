@@ -46,7 +46,8 @@ namespace FuelManagement.Controllers
                         new Claim("UserId", user.Id ?? "unknown"),
                         new Claim("DisplayName", user.name ?? "unknown"),
                         new Claim("UserName", user.name ?? "unknown"),
-                        new Claim("Email", user.email ?? "unknown")
+                        new Claim("Email", user.email ?? "unknown"),
+                        new Claim("isStationOwner", user.isStationOwner ? "true" : "false")
                     };
 
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
