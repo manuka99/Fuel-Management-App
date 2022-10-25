@@ -209,7 +209,8 @@ public class FuelRequestsController : ControllerBase
                         return BadRequest("Exceeds maximum request quantity");
                     break;
                 default:
-                    break;
+                    return BadRequest("Invalid fuel type");
+                    //break;
             }
 
             fuelRequest.isApproved = true;
