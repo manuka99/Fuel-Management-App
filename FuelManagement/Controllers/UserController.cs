@@ -1,4 +1,9 @@
-﻿using System;
+﻿/*
+    Manuka Yasas (IT19133850)
+    User controller will expose apis that can be used to manage all operations related to users (JWT).
+    Please go through SwaggerOperation summary in each method to understand its usage
+*/
+using System;
 using FuelManagement.Services;
 using FuelManagement.Models;
 using Microsoft.AspNetCore.Mvc;

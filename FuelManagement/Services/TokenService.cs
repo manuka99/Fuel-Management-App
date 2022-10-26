@@ -1,4 +1,8 @@
-﻿using System;
+﻿/*
+    Manuka Yasas (IT19133850)
+    Claim based authentication service
+*/
+using System;
 using System.Security.Claims;
 using FuelManagement.Models;
 using MongoDB.Driver;
