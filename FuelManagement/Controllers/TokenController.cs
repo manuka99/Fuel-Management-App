@@ -1,4 +1,10 @@
-﻿using System;
+﻿/*
+    Manuka Yasas (IT19133850)
+    Token controller will expose apis that can be used to manage all operations related to authentication token (JWT).
+    Please go through SwaggerOperation summary in each method to understand its usage
+*/
+
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -32,7 +38,7 @@ namespace FuelManagement.Controllers
                 if (user == null)
                     return BadRequest(new { message = "Invalid email" });
 
-                // validate password
+                // verify password
                 bool verified = BCrypt.Net.BCrypt.Verify(password, user.password);
 
                 if (!verified)

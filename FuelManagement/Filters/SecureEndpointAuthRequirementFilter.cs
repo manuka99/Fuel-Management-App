@@ -1,4 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿/*
+    Manuka Yasas (IT19133850)
+    SecureEndpointAuthRequirementFilter will
+    enable users to authenticate using bearer token through the swagger ui 
+*/
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 

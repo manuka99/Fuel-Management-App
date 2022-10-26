@@ -1,4 +1,8 @@
-﻿
+﻿/*
+    Manuka Yasas (IT19133850)
+    Model of the Fuel request class
+    Fuel request class will store all nformtion related to the request made by a user to pump fuel
+*/
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;

@@ -1,4 +1,9 @@
-﻿using System;
+﻿/*
+    Manuka Yasas (IT19133850)
+    Model of the Database class
+    Store all properties related to creating a mongo db connection
+*/
+using System;
 namespace FuelManagement.Models
 {
     public class MongoDBSettings : IMongoDBSettings

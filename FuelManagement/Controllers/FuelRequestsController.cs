@@ -1,4 +1,10 @@
-﻿using System;
+﻿/*
+    Manuka Yasas (IT19133850)
+    Fuel request controller will expose apis that can be used to
+    request fuel, token, get token info, next the next token in queue and much more functionaly.
+    Please go through SwaggerOperation summary in each method to understand its usage
+*/
+using System;
 using FuelManagement.Services;
 using FuelManagement.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -209,7 +215,8 @@ public class FuelRequestsController : ControllerBase
                         return BadRequest("Exceeds maximum request quantity");
                     break;
                 default:
-                    break;
+                    return BadRequest("Invalid fuel type");
+                    //break;
             }
 
             fuelRequest.isApproved = true;

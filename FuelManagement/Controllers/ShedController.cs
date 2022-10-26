@@ -1,4 +1,10 @@
-﻿using System;
+﻿/*
+    Manuka Yasas (IT19133850)
+    Shed controller will expose apis that can be used to manage operations related to shed.
+    Please go through SwaggerOperation summary in each method to understand its usage
+*/
+
+using System;
 using FuelManagement.Services;
 using FuelManagement.Models;
 using Microsoft.AspNetCore.Mvc;

@@ -1,4 +1,8 @@
-﻿using System;
+﻿/*
+    Manuka Yasas (IT19133850)
+    Error codes with messages
+*/
+using System;
 namespace FuelManagement.Util
 {
     public static class ErrorStatus
