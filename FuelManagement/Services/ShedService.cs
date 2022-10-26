@@ -24,26 +24,31 @@ namespace FuelManagement.Services
             _database.Indexes.CreateOne(indexModel);
         }
 
+        // search for sheds by given text string
         public async Task<List<Shed>> search(string text)
         {
             return await _database.Find(Builders<Shed>.Filter.Text(text)).ToListAsync();
         }
 
+        //get all saved sheds
         public async Task<List<Shed>> GetAllAsync()
         {
             return await _database.Find(s => true).ToListAsync();
         }
 
+        // get shed by id 
         public async Task<Shed> GetByIdAsync(string id)
         {
             return await _database.Find<Shed>(s => s.Id == id).FirstOrDefaultAsync();
         }
 
+        // get sheds by owner's user id
         public async Task<List<Shed>> GetByOwnerAsync(string ownerId)
         {
             return await _database.Find<Shed>(s => s.owner == ownerId).ToListAsync();
         }
 
+        // save a new shed
         public async Task<Shed> CreateAsync(Shed shed)
         {
             shed.Id = null;
@@ -51,11 +56,13 @@ namespace FuelManagement.Services
             return shed;
         }
 
+        // save/update a existing shed
         public async Task UpdateAsync(string id, Shed shed)
         {
             await _database.ReplaceOneAsync(s => s.Id == id, shed);
         }
 
+        // delete a shed by id
         public async Task DeleteAsync(string id)
         {
             await _database.DeleteOneAsync(s => s.Id == id);

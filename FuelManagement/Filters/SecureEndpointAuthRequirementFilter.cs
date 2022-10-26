@@ -9,6 +9,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 internal class SecureEndpointAuthRequirementFilter : IOperationFilter
 {
+    // enable users to authenticate using bearer token through the swagger ui 
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
         if (!context.ApiDescription

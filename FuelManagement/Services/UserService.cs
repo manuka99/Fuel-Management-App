@@ -20,21 +20,25 @@ namespace FuelManagement.Services
             _database = database.GetCollection<User>(settings.UserCollectionName);
         }
 
+        // get the total number of users within the system
         public async Task<long> GetTotalCount()
         {
             return await _database.CountDocumentsAsync(s => true);
         }
 
+        // get user by id
         public async Task<User> GetByIdAsync(string id)
         {
             return await _database.Find<User>(s => s.Id == id).FirstOrDefaultAsync();
         }
 
+        //get user by email
         public async Task<User> GetByEmailAsync(string? email)
         {
             return await _database.Find<User>(s => s.email == email).FirstOrDefaultAsync();
         }
 
+        // save a new user in database
         public async Task<bool> CreateAsync(User user)
         {
             bool isUserExist = await checkEmailExists(user.email);
@@ -50,6 +54,7 @@ namespace FuelManagement.Services
             }
         }
 
+        // save/update a existing user
         public async Task<bool> UpdateAsync(string id, User user)
         {
             var dbUser = await GetByIdAsync(id);
@@ -62,11 +67,13 @@ namespace FuelManagement.Services
             else return false;
         }
 
+        // delete a user by id
         public async Task DeleteByIdAsync(string id)
         {
             await _database.DeleteOneAsync(s => s.Id == id);
         }
 
+        // delete a user by email
         public async Task DeleteByEmailAsync(string email)
         {
             await _database.DeleteOneAsync(s => s.email == email);

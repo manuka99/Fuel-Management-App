@@ -11,6 +11,7 @@ namespace FuelManagement.Services
 {
     public class TokenService
     {
+        // get the user profile of the logged in user with their claims
         public User getAuthUser(HttpContext httpContext)
         {
             User authUser = new User();
